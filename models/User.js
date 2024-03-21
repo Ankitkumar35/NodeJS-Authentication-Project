@@ -1,42 +1,42 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
+// User.js
 
-const User = sequelize.define('User', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    profilePicture: {
-        type: DataTypes.STRING,
-        defaultValue: ''
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    profileVisibility: {
-        type: DataTypes.ENUM('public', 'private'),
-        defaultValue: 'public'
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-    }
-});
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  googleId: {
+    type: String,
+    unique: true
+  },
+  // Additional profile-related fields
+  name: {
+    type: String
+  },
+  bio: {
+    type: String
+  },
+  phone: {
+    type: String
+  },
+  photo: {
+    type: String // URL of the user's profile photo
+  },
+  // Privacy settings
+  isProfilePublic: {
+    type: Boolean,
+    default: true // Set to true by default (public profile)
+  },
+  // Add other fields as needed for user profile
+}, { timestamps: true });
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
