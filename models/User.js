@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   googleId: {
     type: String,
-    unique: true
+    default: " "
   },
   // Additional profile-related fields
   name: {
@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema({
   },
   photo: {
     type: String // URL of the user's profile photo
+  },
+  photosuploaded:{
+    type:[string]
   },
   // Privacy settings
   isProfilePublic: {

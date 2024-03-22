@@ -1,28 +1,458 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "My API",
-      "description": "My API description",
-      "version": "1.0.0"
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "User Profile API",
+    "description": "API endpoints for managing user profiles"
+  },
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/profile/me": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Get user profile",
+        "description": "Retrieve user's own profile details",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "bio": {
+                  "type": "string",
+                  "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "+1234567890"
+                },
+                "photo": {
+                  "type": "string",
+                  "example": "http://localhost:3000/uploads/photo123.jpg"
+                },
+                "isProfilePublic": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized access"
+                }
+              }
+            }
+          }
+        }
+      }
     },
-    "paths": {
-      "/": {
-        "get": {
-          "summary": "Root endpoint",
-          "description": "Returns 'Hello, World!'",
-          "responses": {
-            "200": {
-              "description": "Successful response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
+   "/profile/me/privacy": {
+      "put": {
+        "tags": ["Profile"],
+        "summary": "Update profile privacy",
+        "description": "Update user's own profile privacy settings",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Updated profile privacy settings",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isProfilePublic": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "$ref": "#/responses/ProfilePrivacyUpdateResponse"
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Register a new user with email and password",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User registration details",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User registered successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User registered successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Email already exists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User login",
+        "description": "Authenticate user with email and password",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User login credentials",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "JWT_token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid email or password"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login/google": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Login with Google",
+        "description": "Initiate login with Google authentication provider",
+        "responses": {
+          "302": {
+            "description": "Redirect to Google login page",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "example": "https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:3000/auth/google/callback&response_type=code&scope=email%20profile"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Logout",
+        "description": "Logout the authenticated user",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Token",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "jbueb$niueb"
+                }
+      
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Logout successful"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error occurred"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/me": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Get user profile",
+        "description": "Retrieve user's own profile details",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "headers": {
+              "Authorization": {
+                "type": "string",
+                "description": "JWT token",
+                "example": "Bearer <token>"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized access"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Profile"],
+        "summary": "Update user profile",
+        "description": "Update user's own profile details",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+       
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Updated profile data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserProfileUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Profile updated successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized access"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "jwt": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT authorization header"
+    }
+  },
+  "definitions": {
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "user@example.com"
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "bio": {
+          "type": "string",
+          "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        },
+        "phone": {
+          "type": "string",
+          "example": "+1234567890"
+        },
+        "photo": {
+          "type": "string",
+          "example": "http://localhost:3000/uploads/photo123.jpg"
+        },
+        "isProfilePublic": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "UserProfileUpdate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "bio": {
+          "type": "string",
+          "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        },
+        "phone": {
+          "type": "string",
+          "example": "+1234567890"
+        }
+      }
+    },
+    "/profile/me/privacy": {
+      "put": {
+        "tags": ["Profile Privacy"],
+        "summary": "Update user profile privacy",
+        "description": "Update user's own profile privacy settings",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Updated profile privacy settings",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile privacy settings updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Profile privacy settings updated successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized access"
                 }
               }
             }
@@ -31,4 +461,4 @@
       }
     }
   }
-  
+}

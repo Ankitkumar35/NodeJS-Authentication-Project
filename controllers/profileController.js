@@ -65,8 +65,8 @@ exports.updateProfilePrivacy = async (req, res) => {
       // Update the profile privacy settings
       user.isProfilePublic = isProfilePublic;
       await user.save();
-  
-      res.json({ message: 'Profile privacy settings updated successfully', isProfilePublic });
+      console.log("Privacy Upated")
+      res.json({ message: 'Profile privacy settings updated successfully' });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }

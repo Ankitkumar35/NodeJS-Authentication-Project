@@ -19,6 +19,7 @@ exports.registerWithEmailPassword = async ({ email, password }) => {
 
     // Create the new user
     user = new User({ email, password: hashedPassword });
+    user.googleId=email
     await user.save();
     console.log('user registered')
     return user;

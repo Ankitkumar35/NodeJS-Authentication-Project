@@ -26,12 +26,9 @@ app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 
 
-
-
-
 const PORT = process.env.PORT || 3000;
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/',(req,res)=>res.send("running"));
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
