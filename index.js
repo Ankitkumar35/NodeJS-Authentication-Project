@@ -16,7 +16,7 @@ const swaggerDocument = require('./swagger.json');
 const app = express();
 // app.use(cors());
 app.use(session({
-  secret: 'your-secret-key',
+  secret: config.jwtSecret,
   resave: false,
   saveUninitialized: true
 }));

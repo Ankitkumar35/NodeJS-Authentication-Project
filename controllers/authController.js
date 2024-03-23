@@ -26,7 +26,7 @@ exports.loginWithEmailPassword = async (req, res) => {
 
 exports.loginWithGoogle = (req, res) => {
   const redirectUri = "http://localhost:3000/auth/google/callback";
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=756003095528-0cvourkl39kvitap4kr41i0clkq38nk3.apps.googleusercontent.com&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile`;
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google.clientID}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile`;
 
   res.redirect(authUrl);
 };
@@ -35,12 +35,11 @@ exports.googleCallback = async (req, res) => {
   const code = req.query.code;
 
   const redirectUri = "http://localhost:3000/auth/google/callback";
-  const clientId =
-    "756003095528-0cvourkl39kvitap4kr41i0clkq38nk3.apps.googleusercontent.com";
+  const clientId =config.google.clientID;
 
-  const clientSecret = "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";
+  const clientSecret = config.google.clientSecret;
 
-  const tokenUrl = "https://accounts.google.com/o/oauth2/token";
+  const tokenUrl = config.google.tokenURL;
   const auth = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString(
     "base64"
   )}`;
