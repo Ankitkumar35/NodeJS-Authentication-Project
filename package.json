@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "User Auth",
   "main": "index.js",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -28,7 +31,8 @@
     "passport-google-oauth20": "^2.0.0",
     "request": "^2.88.2",
     "sequelize": "^6.37.1",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "vercel": "^33.6.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
