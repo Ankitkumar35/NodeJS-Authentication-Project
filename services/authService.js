@@ -1,9 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const config = require("../config/config");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+require('dotenv').config();
 
 // Register with email and password
 exports.registerWithEmailPassword = async ({ email, password }) => {
@@ -44,7 +44,7 @@ exports.loginWithEmailPassword = async ({ email, password }) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, config.jwtSecret, {
+    const token = jwt.sign({ userId: user._id }, process.env.jwtSecret, {
       expiresIn: "1h",
     });
     console.log("Login Successful");
@@ -74,7 +74,7 @@ exports.loginOrSignUp = async (email) => {
       // Perform login logic here
     }
     console.log(email);
-    const token =  await jwt.sign({ userId: user._id }, config.jwtSecret, {
+    const token =  await jwt.sign({ userId: user._id }, process.env.jwtSecret, {
       expiresIn: "1h",
     });
     console.log("Login Successful");

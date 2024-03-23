@@ -1,9 +1,9 @@
 const authService = require("../services/authService");
-const config = require("../config/config");
 const request = require("request");
 const axios = require("axios");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
 exports.register = async (req, res) => {
   try {
@@ -26,7 +26,7 @@ exports.loginWithEmailPassword = async (req, res) => {
 
 exports.loginWithGoogle = (req, res) => {
   const redirectUri = "http://localhost:3000/auth/google/callback";
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.google.clientID}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile`;
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.clientID}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile`;
 
   res.redirect(authUrl);
 };
@@ -35,11 +35,11 @@ exports.googleCallback = async (req, res) => {
   const code = req.query.code;
 
   const redirectUri = "http://localhost:3000/auth/google/callback";
-  const clientId =config.google.clientID;
+  const clientId =process.env.clientID;
 
-  const clientSecret = config.google.clientSecret;
+  const clientSecret = process.env.clientSecret;
 
-  const tokenUrl = config.google.tokenURL;
+  const tokenUrl = process.env.tokenURL;
   const auth = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString(
     "base64"
   )}`;

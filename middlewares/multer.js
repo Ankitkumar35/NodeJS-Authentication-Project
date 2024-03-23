@@ -2,6 +2,7 @@
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+require('dotenv').config();
 
 const User = require("../models/User");
 // Specify the directory where uploaded photos will be stored

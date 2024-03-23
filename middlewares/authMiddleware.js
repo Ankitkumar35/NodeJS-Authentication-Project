@@ -1,7 +1,7 @@
 // authMiddleware.js
 
 const jwt = require('jsonwebtoken');
-const config = require('../config/config');
+// const config = require('../config/config');
 const User = require('../models/User');
 
 exports.authenticateUser = async (req, res, next) => {
@@ -12,7 +12,7 @@ exports.authenticateUser = async (req, res, next) => {
       return res.status(401).json({ message: 'Authorization token is missing' });
     }
 
-    const decodedToken = jwt.verify(token, config.jwtSecret);
+    const decodedToken = jwt.verify(token, process.env.jwtSecret);
 
     const user = await User.findById(decodedToken.userId);
     if (!user) {

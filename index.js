@@ -2,10 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const config = require('./config/config');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const cors = require('cors');
+require('dotenv').config();
 
 const session = require('express-session');
 
@@ -16,12 +16,12 @@ const swaggerDocument = require('./swagger.json');
 const app = express();
 // app.use(cors());
 app.use(session({
-  secret: config.jwtSecret,
+  secret: process.env.jwtSecret,
   resave: false,
   saveUninitialized: true
 }));
 // Connect to MongoDB
-mongoose.connect(config.mongoURI)
+mongoose.connect(process.env.mongoURI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
