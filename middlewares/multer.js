@@ -1,10 +1,11 @@
 // middleware/multer.js
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
+const User = require("../models/User");
 // Specify the directory where uploaded photos will be stored
-const uploadDir = path.join(__dirname, '..', 'uploads');
+const uploadDir = path.join(__dirname, "..", "uploads");
 
 // Create the uploads directory if it doesn't exist
 if (!fs.existsSync(uploadDir)) {
@@ -15,11 +16,11 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
   },
-  filename: function (req, file, cb) {
+  filename:  function (req, file, cb) {
     const timestamp = Date.now();
-    const name=`${timestamp}_${file.originalname}`
+    const name = `${timestamp}_${file.originalname}`;
     cb(null, name);
-  }
+  },
 });
 
 const upload = multer({ storage: storage });

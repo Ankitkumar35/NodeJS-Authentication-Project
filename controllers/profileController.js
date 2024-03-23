@@ -44,27 +44,27 @@ exports.updateUserProfile = async (req, res) => {
 exports.uploadProfilePhoto = async (req, res) => {
   try {
     const user = req.user;
-    console.log("1");
+    // console.log("1");
     let imagePath;
     if (req.file) {
-      // const timestamp = Date.now();
+      const timestamp = Date.now();
       const originalFilename = req.file.originalname;
-      console.log("2");
+      // console.log("2");
       const ext = path.extname(originalFilename);
-      // const uniqueFilename = `${timestamp}_${originalFilename}`;
-      console.log("3");
+      const uniqueFilename = `${timestamp}_${originalFilename}`;
+      // console.log("3");
       const uploadDir = path.join(__dirname, "../uploads");
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir);
       }
-      console.log("4");
+      // console.log("4");
       const filePath = path.join(uploadDir, originalFilename);
-      console.log("6");
+      // console.log("6");
 
       console.log(originalFilename);
       // fs.readFileSync(filePath);
       // Set the image path to the unique filename
-      imagePath = originalFilename;
+      imagePath = uniqueFilename;
       user.photo = imagePath;
       await user.save();
     } else if (req.body.imageUrl) {
@@ -90,38 +90,45 @@ exports.uploadProfilePhoto = async (req, res) => {
 exports.uploadPhotos = async (req, res) => {
   try {
     const user = req.user;
-    console.log("1");
+    // console.log("1");
     let imagePath;
     if (req.file) {
-      // const timestamp = Date.now();
+      const timestamp = Date.now();
       const originalFilename = req.file.originalname;
-      console.log("2");
+      // console.log("2");
       const ext = path.extname(originalFilename);
-      // const uniqueFilename = `${timestamp}_${originalFilename}`;
-      console.log("3");
+      const uniqueFilename = `${timestamp}_${originalFilename}`;
+      // console.log("3");
       const uploadDir = path.join(__dirname, "../uploads");
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir);
       }
-      console.log("4");
+      // console.log("4");
       const filePath = path.join(uploadDir, originalFilename);
-      console.log("6");
+      // console.log("6");
 
       console.log(originalFilename);
-      // fs.readFileSync(filePath);
-      // Set the image path to the unique filename
       imagePath = originalFilename;
-      user.photosuploaded.push(...imagePath);
-
+      user.photo = uniqueFilename;
       await user.save();
-
-      res.json({ message: "Photos uploaded successfully", photos: photoUrls });
+    } else if (req.body.imageUrl) {
+      imagePath = req.body.imageUrl;
+      user.photosuploaded.push(...imagePath);
+      await user.save();
+    } else {
+      return res.status(400).send("No image uploaded or URL provided");
     }
+
+    res.json({
+      message: " Photo uploaded successfully",
+      photoUrl: imagePath,
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).send("Error uploading  photo.");
   }
 };
+      
 
 exports.updateProfilePrivacy = async (req, res) => {
   try {

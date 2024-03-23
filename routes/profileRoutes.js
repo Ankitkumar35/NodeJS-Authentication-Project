@@ -19,7 +19,7 @@ router.get('/public', profileController.getPublicUserProfiles);
 
 router.get('/', profileController.getAllUserProfiles);
 
-router.post('/photos', authMiddleware.authenticateUser, uploadMiddleware.array('photos'), profileController.uploadPhotos);
+router.post('/photos', authMiddleware.authenticateUser, uploadMiddleware.single('photos'), profileController.uploadPhotos);
 
 
 module.exports = router;
