@@ -67,15 +67,19 @@ exports.loginOrSignUp = async (email) => {
       console.log("User does not exist, signing up");
 
       // Create a new user record with the provided email addre
-      user = new User({ email, password: await bcrypt.hash("12345678", 10)});
+      user = new User({ email});
       user.googleId = email;
       await user.save();
 
       // Perform login logic here
     }
-
-    // Return user data or authentication token
-    return user; // Or return authentication token if applicable
+    console.log(email);
+    const token =  await jwt.sign({ userId: user._id }, config.jwtSecret, {
+      expiresIn: "1h",
+    });
+    console.log("Login Successful");
+    // res.send(token);
+    return token;
   } catch (error) {
     console.error("Error in loginOrSignUp:", error);
     throw error;

@@ -80,19 +80,11 @@ exports.googleCallback = async (req, res) => {
         };
 
         getUserEmail(accessToken)
-          .then((email) => {
-            const userEmail = email; // Replace with the email obtained from Google OAuth
-            authService.loginOrSignUp(userEmail)
-              .then(async(user) => {
-                // const user=user
-                // res.redirect("http://localhost:3000/auth/login");
-                const mail=email
-                const password=null
-                const token= await authService.loginWithEmailPassword({mail,password})
-                res.json({ token });
-                console.log("Login/signup successful:", user);
-                })
-              .catch((err) => console.error("Login/signup failed:", err));
+          .then(async (email) => {
+            const userEmail = email;
+            const token= await authService.loginOrSignUp(userEmail)
+            res.json({  "message": "Copy and paste the token in swagger for the authorization" , token});
+            
           })
           .catch((err) => console.error("Failed to retrieve user email:", err));
       }

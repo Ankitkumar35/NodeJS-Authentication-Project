@@ -11,7 +11,7 @@ router.get('/me', profileController.getUserProfile);
 
 router.put('/me', profileController.updateUserProfile);
 
-router.post('/me/photo', profileController.uploadProfilePhoto);
+router.post('/me/photo', uploadMiddleware.single('file') ,profileController.uploadProfilePhoto);
 
 router.put('/me/privacy', profileController.updateProfilePrivacy);
 

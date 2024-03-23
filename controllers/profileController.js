@@ -44,33 +44,39 @@ exports.updateUserProfile = async (req, res) => {
 exports.uploadProfilePhoto = async (req, res) => {
   try {
     const user = req.user;
-
+    console.log("1");
     let imagePath;
     if (req.file) {
-      const timestamp = Date.now();
+      // const timestamp = Date.now();
       const originalFilename = req.file.originalname;
+      console.log("2");
       const ext = path.extname(originalFilename);
-      const uniqueFilename = `${timestamp}_${originalFilename}${ext}`;
-
-      const uploadDir = path.join(__dirname, "../ProfilePhoto");
+      // const uniqueFilename = `${timestamp}_${originalFilename}`;
+      console.log("3");
+      const uploadDir = path.join(__dirname, "../uploads");
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir);
       }
-      const filePath = path.join(uploadDir, uniqueFilename);
-      fs.writeFileSync(filePath, req.file.buffer);
+      console.log("4");
+      const filePath = path.join(uploadDir, originalFilename);
+      console.log("6");
 
+      console.log(originalFilename);
+      // fs.readFileSync(filePath);
       // Set the image path to the unique filename
-      imagePath = filePath;
+      imagePath = originalFilename;
+      user.photo = imagePath;
+      await user.save();
     } else if (req.body.imageUrl) {
       // If a URL is provided, save it directly
       imagePath = req.body.imageUrl;
+      user.photo = imagePath;
+      await user.save();
     } else {
       return res.status(400).send("No image uploaded or URL provided");
     }
 
     // Update the user's profile photo field in MongoDB
-    user.photo = imagePath;
-    await user.save();
 
     res.json({
       message: "Profile photo uploaded successfully",
@@ -79,6 +85,41 @@ exports.uploadProfilePhoto = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Error uploading profile photo.");
+  }
+};
+exports.uploadPhotos = async (req, res) => {
+  try {
+    const user = req.user;
+    console.log("1");
+    let imagePath;
+    if (req.file) {
+      // const timestamp = Date.now();
+      const originalFilename = req.file.originalname;
+      console.log("2");
+      const ext = path.extname(originalFilename);
+      // const uniqueFilename = `${timestamp}_${originalFilename}`;
+      console.log("3");
+      const uploadDir = path.join(__dirname, "../uploads");
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir);
+      }
+      console.log("4");
+      const filePath = path.join(uploadDir, originalFilename);
+      console.log("6");
+
+      console.log(originalFilename);
+      // fs.readFileSync(filePath);
+      // Set the image path to the unique filename
+      imagePath = originalFilename;
+      user.photosuploaded.push(...imagePath);
+
+      await user.save();
+
+      res.json({ message: "Photos uploaded successfully", photos: photoUrls });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -128,28 +169,5 @@ exports.getAllUserProfiles = async (req, res) => {
     res.json(allProfiles);
   } catch (err) {
     res.status(500).json({ message: "Authorized token missing" });
-  }
-};
-
-exports.uploadPhotos = async (req, res) => {
-  try {
-    const user = req.user;
-
-    // Check if the request contains photos
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: "No photos uploaded" });
-    }
-
-    const photoUrls = req.files.map((file) => file.path.toString()); // Convert file paths to strings
-
-    // Update the photosuploaded field in the user schema
-    user.photosuploaded.push(...photoUrls);
-
-    await user.save();
-
-    res.json({ message: "Photos uploaded successfully", photos: photoUrls });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal server error" });
   }
 };
