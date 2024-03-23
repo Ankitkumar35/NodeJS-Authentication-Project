@@ -5,13 +5,21 @@ const passport = require('passport');
 const config = require('./config/config');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const cors = require('cors');
+
+const session = require('express-session');
 
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
 const app = express();
-
+// app.use(cors());
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true
+}));
 // Connect to MongoDB
 mongoose.connect(config.mongoURI)
   .then(() => console.log('MongoDB connected'))
@@ -20,7 +28,6 @@ mongoose.connect(config.mongoURI)
 // Middleware
 app.use(bodyParser.json());
 app.use(passport.initialize());
-require('./services/authService').initPassport();
 // Routes
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);

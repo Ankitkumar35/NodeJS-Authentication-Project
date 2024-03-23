@@ -30,13 +30,17 @@ const userSchema = new mongoose.Schema({
     type: String // URL of the user's profile photo
   },
   photosuploaded:{
-    type:[string]
+    type:[{String}]
   },
   // Privacy settings
   isProfilePublic: {
     type: Boolean,
     default: true // Set to true by default (public profile)
   },
+  isAdmin:{
+    type: Boolean,
+    default: false
+  }
   // Add other fields as needed for user profile
 }, { timestamps: true });
 

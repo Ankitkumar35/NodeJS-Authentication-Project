@@ -1,15 +1,16 @@
 const express = require('express');
+const passport = require('passport');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const User= require('../models/User')
+const config= require('../config/config');
 router.post('/register', authController.register);
 router.post('/login', authController.loginWithEmailPassword);
-router.get('/login/google', authController.loginWithGoogle);
 router.post('/logout', authController.logout);
 
-router.get('/users',(req,res)=>{
-    // res.json(User);
-    res.send("hi")
-})
+router.get('/login/google', authController.loginWithGoogle);
+
+router.get('/google/callback', authController.googleCallback);
+  
 
 module.exports = router;

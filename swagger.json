@@ -8,93 +8,7 @@
   "basePath": "/",
   "schemes": ["http"],
   "paths": {
-    "/profile/me": {
-      "get": {
-        "tags": ["Profile"],
-        "summary": "Get user profile",
-        "description": "Retrieve user's own profile details",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "user@example.com"
-                },
-                "name": {
-                  "type": "string",
-                  "example": "John Doe"
-                },
-                "bio": {
-                  "type": "string",
-                  "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                },
-                "phone": {
-                  "type": "string",
-                  "example": "+1234567890"
-                },
-                "photo": {
-                  "type": "string",
-                  "example": "http://localhost:3000/uploads/photo123.jpg"
-                },
-                "isProfilePublic": {
-                  "type": "boolean",
-                  "example": true
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Unauthorized access"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-   "/profile/me/privacy": {
-      "put": {
-        "tags": ["Profile"],
-        "summary": "Update profile privacy",
-        "description": "Update user's own profile privacy settings",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Updated profile privacy settings",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "isProfilePublic": {
-                  "type": "boolean",
-                  "example": true
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "$ref": "#/responses/ProfilePrivacyUpdateResponse"
-        }
-      }
-    },
+   
     "/auth/register": {
       "post": {
         "tags": ["Authentication"],
@@ -209,17 +123,21 @@
     "/auth/login/google": {
       "get": {
         "tags": ["Authentication"],
-        "summary": "Login with Google",
-        "description": "Initiate login with Google authentication provider",
+        "summary": "Initiate Google OAuth login",
+        "description": "Copy Paste the address to the url http://localhost:3000/auth/login/google"
+      }
+    },
+    "/auth/login/google/callback": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Handle Google OAuth callback",
+        "description": "Handles the callback from Google OAuth provider after authentication.",
         "responses": {
           "302": {
-            "description": "Redirect to Google login page",
-            "headers": {
-              "Location": {
-                "type": "string",
-                "example": "https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:3000/auth/google/callback&response_type=code&scope=email%20profile"
-              }
-            }
+            "description": "Redirect to the appropriate page after authentication"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
@@ -230,24 +148,7 @@
         "summary": "Logout",
         "description": "Logout the authenticated user",
         "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Token",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "token": {
-                  "type": "string",
-                  "example": "jbueb$niueb"
-                }
-      
-              }
-            }
-          }
-        ],
+       
         "responses": {
           "200": {
             "description": "Logout successful",
@@ -362,7 +263,294 @@
           }
         }
       }
+    },
+    "/profile/me/photo": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Upload Profile Photo",
+        "description": "Endpoint to upload a new profile photo for the authenticated user. Users can upload a photo from their local machine or provide a link to the photo.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "Image file to upload (if uploading from local machine)",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "imageUrl",
+            "in": "formData",
+            "description": "URL of the image (if providing a link)",
+            "required": false,
+            "type": "string"
+          }
+        ],
+       
+        "responses": {
+          "200": {
+            "description": "Profile photo uploaded successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Profile photo uploaded successfully"
+                },
+                "imageUrl": {
+                  "type": "string",
+                  "example": "http://example.com/uploads/photo123.jpg"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No file uploaded or image URL provided"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized access. Please provide a valid JWT token."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securityDefinitions": {
+      "JWT": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "JWT token for authentication. Please include 'Bearer ' followed by the token."
+      }
+    },
+    "/profile/photos": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Upload Photos",
+        "description": "Endpoint to upload photos for the authenticated user.",
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": [
+          
+          {
+            "name": "photos",
+            "in": "formData",
+            "description": "Array of photo files to upload",
+            "required": true,
+            "type": "file",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Photos uploaded successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Photos uploaded successfully"
+                },
+                "photos": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "http://example.com/uploads/photo1.jpg"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No photos uploaded"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized access. Please provide a valid JWT token."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+  "/profile/me/privacy": {
+    "put": {
+      "tags": ["Profile"],
+      "summary": "Update Profile Privacy",
+      "description": "Endpoint to update the privacy settings of the authenticated user's profile.",
+      "security": [
+        {
+          "jwt": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "description": "Updated privacy settings",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "isProfilePublic": {
+                "type": "boolean",
+                "example": false
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Profile privacy settings updated successfully",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Profile privacy settings updated successfully"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Unauthorized access"
+              }
+            }
+          }
+        }
+      }
     }
+  },
+  "/profile/public": {
+    "get": {
+      "tags": ["Profile"],
+      "summary": "Get Public User Profiles",
+      "description": "Endpoint to retrieve public user profiles, accessible to normal users.",
+      "security": [
+        {
+          "jwt": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful operation",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Unauthorized access"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/profile": {
+    "get": {
+      "tags": ["Profile"],
+      "summary": "Get All User Profiles",
+      "description": "Endpoint to retrieve all user profiles, accessible to admin users.",
+      "security": [
+        {
+          "jwt": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful operation",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/UserProfile"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Unauthorized access"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   },
   "securityDefinitions": {
     "jwt": {
@@ -418,47 +606,7 @@
           "example": "+1234567890"
         }
       }
-    },
-    "/profile/me/privacy": {
-      "put": {
-        "tags": ["Profile Privacy"],
-        "summary": "Update user profile privacy",
-        "description": "Update user's own profile privacy settings",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Updated profile privacy settings",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Profile privacy settings updated successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Profile privacy settings updated successfully"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Unauthorized access"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 }
+  
