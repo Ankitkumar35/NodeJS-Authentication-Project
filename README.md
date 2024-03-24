@@ -8,8 +8,9 @@ run `npm install --save` to download all the libraries
 Run `npm start` to ignite the project.
 ### Routes
 
-Swagger Homepage: http://localhost:3000/
-Sign Up: (POST) http://localhost:3000/auth/register
+1. Swagger Homepage: http://localhost:3000/ 
+2. Sign Up: (POST) http://localhost:3000/auth/register
+
 Sign In:(POST) http://localhost:3000/auth/login
 Google Sign In And Sign Up: (GET) http://localhost:3000/auth/login/google
 Logout: (POST) http://localhost:3000/auth/logout
