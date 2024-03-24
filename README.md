@@ -1,10 +1,10 @@
 # NodeJS-Authentication-Project
-A complete authentication system which can be used as a starter code for creating any new application.
+A complete authentication system that can be used as a starter code for creating any new application.
 
 ### Setup the Project
 Clone or Download the Repo.
 `cd NodeJS-Authentication-Project` goto the Repo using Terminal.
-run `npm install --save` to download all the librabries
+run `npm install --save` to download all the libraries
 Run `npm start` to ignite the project.
 ### Routes
 
