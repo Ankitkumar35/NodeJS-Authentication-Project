@@ -10,18 +10,17 @@ Run `npm start` to ignite the project.
 
 1. Swagger Homepage: http://localhost:3000/ 
 2. Sign Up: (POST) http://localhost:3000/auth/register
+3. Sign In:(POST) http://localhost:3000/auth/login
+4. Google Sign In And Sign Up: (GET) http://localhost:3000/auth/login/google
+5. Logout: (POST) http://localhost:3000/auth/logout
 
-Sign In:(POST) http://localhost:3000/auth/login
-Google Sign In And Sign Up: (GET) http://localhost:3000/auth/login/google
-Logout: (POST) http://localhost:3000/auth/logout
-
-My profile: (GET)  http://localhost:3000/profile/me
-Profile Update:(PUT)  http://localhost:3000/profile/me  
-Profile Photo:(POST)  http://localhost:3000/profile/me/photo
-Images Upload:(POST)  http://localhost:3000/profile/photos
-Privacy Update:(PUT) http://localhost:3000/profile/me/privacy
-Access Public User:(GET)  http://localhost:3000/profile/public
-Access all User:(GET)  http://localhost:3000/profile/
+6. My profile: (GET)  http://localhost:3000/profile/me
+7. Profile Update:(PUT)  http://localhost:3000/profile/me  
+8. Profile Photo:(POST)  http://localhost:3000/profile/me/photo
+9. Images Upload:(POST)  http://localhost:3000/profile/photos
+10. Privacy Update:(PUT) http://localhost:3000/profile/me/privacy
+11. Access Public User:(GET)  http://localhost:3000/profile/public
+12. Access all User:(GET)  http://localhost:3000/profile/
 
 ### Instruction 
 After Login copy and paste the token in authorization field for the authentication.
